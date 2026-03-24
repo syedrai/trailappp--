@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Computer Store</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #111;
+            color: #fff;
+            margin: 0;
+        }
+        header {
+            background: #222;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+        }
+        .container {
+            display: flex;
+        }
+        .products, .cart {
+            flex: 1;
+            padding: 20px;
+        }
+        .product, .cart-item {
+            background: #1e1e1e;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        button {
+            background: #0f62fe;
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0353e9;
+        }
+    </style>
+</head>
+<body>
+
+<header>💻 Computer Store</header>
+
+<div class="container">
+    <div class="products">
+        <h2>Products</h2>
+        <div id="productList"></div>
+    </div>
+
+    <div class="cart">
+        <h2>Cart 🛒</h2>
+        <div id="cartList"></div>
+        <h3 id="total"></h3>
+    </div>
+</div>
+
+<script>
+const products = [
+    { id: 1, name: "Gaming Laptop", price: 80000 },
+    { id: 2, name: "Mechanical Keyboard", price: 3000 },
+    { id: 3, name: "Gaming Mouse", price: 1500 },
+    { id: 4, name: "Monitor 24 inch", price: 12000 }
+];
+
+// Load cart from localStorage
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// Display products
+function displayProducts() {
+    const productList = document.getElementById("productList");
+    productList.innerHTML = "";
+
+    products.forEach(p => {
+        productList.innerHTML += `
+            <div class="product">
+                <h3>${p.name}</h3>
+                <p>₹${p.price}</p>
+                <button onclick="addToCart(${p.id})">Add to Cart</button>
+            </div>
+        `;
+    });
+}
+
+// Add to cart
+function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    cart.push(product);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCart();
+}
+
+// Display cart
+function displayCart() {
+    const cartList = document.getElementById("cartList");
+    const totalEl = document.getElementById("total");
+    cartList.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        total += item.price;
+        cartList.innerHTML += `
+            <div class="cart-item">
+                <p>${item.name} - ₹${item.price}</p>
+                <button onclick="removeItem(${index})">Remove</button>
+            </div>
+        `;
+    });
+
+    totalEl.innerText = "Total: ₹" + total;
+}
+
+// Remove item
+function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCart();
+}
+
+// Init
+displayProducts();
+displayCart();
+</script>
+
+</body>
+</html>
